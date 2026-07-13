@@ -1,0 +1,14 @@
+{
+  "name": "merchant-store",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "backend/apps/*",
+    "backend/packages/*"
+  ],
+  "scripts": {
+    "dev:backend": "npm run dev --workspace=backend",
+    "dev:storefront": "npm run dev --prefix storefront"
+  }
+}

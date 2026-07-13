@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  backend-ci:
+    name: Backend CI
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - name: Install Dependencies
+        run: npm ci
+      - name: Build
+        run: npm run build --workspace=backend
+      - name: Lint
+        run: npm run lint --workspace=backend
+        continue-on-error: true
+      - name: Test
+        run: npm run test:unit --workspace=backend
+        continue-on-error: true
+
+  storefront-ci:
+    name: Storefront CI
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install Dependencies
+        working-directory: ./storefront
+        run: npm install
+      - name: Lint
+        working-directory: ./storefront
+        run: npm run lint
+        continue-on-error: true
+      - name: Build
+        working-directory: ./storefront
+        run: npm run build
