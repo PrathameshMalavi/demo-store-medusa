@@ -1,0 +1,49 @@
+services:
+  # ---------------------------------------------------------
+  # 1. Medusa Backend Web Service
+  # ---------------------------------------------------------
+  - type: web
+    name: merchant-backend
+    env: node
+    region: oregon # Change to your preferred region (e.g. frankfurt, ohio, singapore)
+    buildCommand: npm install && npm run build --workspace=backend
+    startCommand: npm run start --workspace=backend
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false # You will manually input your Supabase string in the Render Dashboard
+      - key: REDIS_URL
+        sync: false # If you are using Redis, put it here. Otherwise, leave empty if Medusa v2 falls back to fake redis
+      - key: JWT_SECRET
+        generateValue: true
+      - key: COOKIE_SECRET
+        generateValue: true
+      - key: STORE_CORS
+        sync: false # Set this to your Storefront URL once you know it (e.g., https://merchant-storefront.onrender.com)
+      - key: ADMIN_CORS
+        sync: false # Set this to your Storefront URL + Backend URL for admin access
+      - key: AUTH_CORS
+        sync: false 
+
+  # ---------------------------------------------------------
+  # 2. Next.js Storefront Web Service
+  # ---------------------------------------------------------
+  - type: web
+    name: merchant-storefront
+    env: node
+    region: oregon
+    rootDir: storefront # Tells Render to execute build/start from inside this folder
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MEDUSA_BACKEND_URL
+        sync: false # You will set this to the Backend URL (e.g., https://merchant-backend.onrender.com)
+      - key: NEXT_PUBLIC_BASE_URL
+        sync: false # You will set this to the Storefront URL (e.g., https://merchant-storefront.onrender.com)
+      - key: NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY
+        sync: false # You will copy your new pk_... key from your local .env.local
+      - key: REVALIDATE_SECRET
+        generateValue: true
