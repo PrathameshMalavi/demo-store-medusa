@@ -1,0 +1,12 @@
+# This file overrides .gitignore on Render.com
+# By default, Render deletes any files generated during build that are listed in .gitignore.
+# Since Medusa generates its entire production build inside the .medusa and build folders,
+# we need Render to keep them! 
+
+# Ignore standard files to keep the slug small
+node_modules
+.DS_Store
+yarn-error.log
+.idea
+coverage
+.cache
